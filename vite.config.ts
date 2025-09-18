@@ -7,6 +7,13 @@
     plugins: [react()],
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+      safelist: [
+        'bg-gradient-to-r',
+        'from-green-400', 'to-green-500',
+        'bg-gray-800',
+        'from-red-400', 'to-red-500',
+        'from-amber-500', 'to-amber-600',
+      ],      
       alias: {
         'vaul@1.1.2': 'vaul',
         'sonner@2.0.3': 'sonner',

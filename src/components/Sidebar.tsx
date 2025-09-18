@@ -16,13 +16,13 @@ export function Sidebar() {
 
   const menuItems = [
     { icon: Gauge, label: 'Machine Dashboard', active: true },
-    { icon: TableProperties, label: 'Die Dashboard' },
-    { icon: Settings, label: 'Machine Detail' },
-    { icon: Users, label: 'User' },
-    { icon: Cog, label: 'Machine Master' },
-    { icon: Wrench, label: 'Maintenance', hasDropdown: true },
-    { icon: TableProperties, label: 'Reports', hasDropdown: true },
-    { icon: Mail, label: 'Email Settings' }
+    // { icon: TableProperties, label: 'Die Dashboard' },
+    // { icon: Settings, label: 'Machine Detail' },
+    // { icon: Users, label: 'User' },
+    // { icon: Cog, label: 'Machine Master' },
+    // { icon: Wrench, label: 'Maintenance', hasDropdown: true },
+    // { icon: TableProperties, label: 'Reports', hasDropdown: true },
+    // { icon: Mail, label: 'Email Settings' }
   ];
 
   return (
@@ -53,22 +53,22 @@ export function Sidebar() {
         )}
       </div>
       
-      {/* Menu Items */}
-      <nav className="flex-1 py-4">
+     {/* Menu Items */}
+     <nav className="flex-1 py-4 px-2">
         {menuItems.map((item, index) => {
           const Icon = item.icon;
           return (
             <button
               key={index}
               className={`w-full flex items-center transition-all duration-200 group relative ${
-                isExpanded ? 'px-4 py-3 justify-start gap-3' : 'px-4 py-3 justify-center'
+                isExpanded ? 'px-4 py-3 justify-start gap-3' : 'py-3 justify-center'
               } ${
                 item.active 
-                  ? 'bg-amber-400 text-slate-800 mx-4 rounded-lg mb-2' 
+                  ? 'bg-amber-400 text-slate-800 rounded-lg mb-2' 
                   : 'text-slate-600 hover:bg-slate-200 hover:text-slate-800'
               }`}
             >
-              <Icon size={20} className="flex-shrink-0" />
+            <Icon size={20} className="flex-shrink-0" />
               
               {isExpanded && (
                 <>

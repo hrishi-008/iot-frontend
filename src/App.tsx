@@ -1,6 +1,9 @@
-import { Sidebar } from './components/Sidebar';
-import { Header } from './components/Header';
-import { MachineCard } from './components/MachineCard';
+import { Header } from "./components/Header";
+import { MachineCard } from "./components/MachineCard";
+import { Sidebar } from "./components/Sidebar";
+import { MachineDetailPage } from "./pages/MachineDetailsPage";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 
 const machineData = [
   {
@@ -9,7 +12,7 @@ const machineData = [
     shift: 2,
     count: 0,
     recipeName: 'CASTING TYPE-1',
-    status: 'active'
+    status: 'online'
   },
   {
     id: 'R500-LPDC-MC-2', 
@@ -17,7 +20,7 @@ const machineData = [
     shift: 1,
     count: 104,
     recipeName: 'AM CAST',
-    status: 'active'
+    status: 'online'
   },
   {
     id: 'R500-LPDC-MC-3',
@@ -25,7 +28,7 @@ const machineData = [
     shift: 2,
     count: 102,
     recipeName: 'WEB CAST',
-    status: 'active'
+    status: 'breakdown'
   },
   {
     id: '1215-VTA-MC-4',
@@ -33,7 +36,7 @@ const machineData = [
     shift: 'NA',
     count: 0,
     recipeName: 'NA',
-    status: 'inactive'
+    status: 'offline'
   },
   {
     id: '1518-VTA-MC-5',
@@ -41,7 +44,7 @@ const machineData = [
     shift: 1,
     count: 50,
     recipeName: 'AM CAST',
-    status: 'active'
+    status: 'maintenance'
   },
   {
     id: '1629-GDC-MC-6',
@@ -49,7 +52,7 @@ const machineData = [
     shift: 'NA',
     count: 0,
     recipeName: 'NA',
-    status: 'inactive'
+    status: 'offline'
   },
   {
     id: '2436-HPA-CB-MC-7',
@@ -57,24 +60,34 @@ const machineData = [
     shift: 'NA', 
     count: 0,
     recipeName: 'NA',
-    status: 'inactive'
+    status: 'offline'
   }
 ];
 
 export default function App() {
   return (
-    <div className="flex h-screen bg-slate-50">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <main className="flex-1 p-6 overflow-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-            {machineData.map((machine) => (
-              <MachineCard key={machine.id} machine={machine} />
-            ))}
-          </div>
-        </main>
+    <Router>
+      <div className="flex h-screen bg-slate-50">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <main className="flex-1 p-4 overflow-y-auto">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/machine/:id" element={<MachineDetailPage />} />
+            </Routes>
+          </main>
+        </div>
       </div>
+    </Router>
+  );
+}
+function Dashboard() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {machineData.map((machine, index) => (
+        <MachineCard key={index} machine={machine} />
+      ))}
     </div>
   );
 }
