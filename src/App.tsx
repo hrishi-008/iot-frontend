@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 const machineData = [
   {
     id: 'R500-LPDC-MC-1',
-    name: 'R500 LPDC MC-1',
+    name: 'Machine 1',
     shift: 2,
     count: 0,
     recipeName: 'CASTING TYPE-1',
@@ -16,7 +16,7 @@ const machineData = [
   },
   {
     id: 'R500-LPDC-MC-2', 
-    name: 'R500 LPDC MC-2',
+    name: 'Machine 2',
     shift: 1,
     count: 104,
     recipeName: 'AM CAST',

@@ -16,6 +16,8 @@ export function Sidebar() {
 
   const menuItems = [
     { icon: Gauge, label: 'Machine Dashboard', active: true },
+    { icon: TableProperties, label: 'Slideshow', link: '/slideshow' },
+    // { icon: TableProperties, label: 'Die Dashboard' },
     // { icon: TableProperties, label: 'Die Dashboard' },
     // { icon: Settings, label: 'Machine Detail' },
     // { icon: Users, label: 'User' },

@@ -15,10 +15,10 @@ interface MachineCardProps {
 }
 
 const statusColorClasses: Record<Machine['status'], string> = {
-  online: 'bg-green-500',
-  offline: 'bg-slate-400',
-  breakdown: 'bg-red-500',
-  maintenance: 'bg-amber-600',
+  online: 'bg-gradient-to-r from-green-400 to-green-500',
+  offline: 'bg-slate-800',
+  breakdown: 'bg-gradient-to-r from-red-400 to-red-800',
+  maintenance: 'bg-gradient-to-r from-amber-500 to-amber-800',
 };
 
 export function MachineCard({ machine }: MachineCardProps) {
