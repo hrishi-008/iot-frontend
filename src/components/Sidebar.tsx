@@ -10,12 +10,14 @@ import {
   Wrench
 } from 'lucide-react';
 import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 export function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const location = useLocation();
 
   const menuItems = [
-    { icon: Gauge, label: 'Machine Dashboard', active: true },
+    { icon: Gauge, label: 'Machine Dashboard', link: '/' },
     { icon: TableProperties, label: 'Slideshow', link: '/slideshow' },
     // { icon: TableProperties, label: 'Die Dashboard' },
     // { icon: TableProperties, label: 'Die Dashboard' },
@@ -59,13 +61,16 @@ export function Sidebar() {
      <nav className="flex-1 py-4 px-2">
         {menuItems.map((item, index) => {
           const Icon = item.icon;
+          const isActive = location.pathname === item.link;
+          
           return (
-            <button
+            <Link
               key={index}
+              to={item.link}
               className={`w-full flex items-center transition-all duration-200 group relative ${
                 isExpanded ? 'px-4 py-3 justify-start gap-3' : 'py-3 justify-center'
               } ${
-                item.active 
+                isActive 
                   ? 'bg-amber-400 text-slate-800 rounded-lg mb-2' 
                   : 'text-slate-600 hover:bg-slate-200 hover:text-slate-800'
               }`}
@@ -75,9 +80,6 @@ export function Sidebar() {
               {isExpanded && (
                 <>
                   <span className="flex-1 text-left">{item.label}</span>
-                  {item.hasDropdown && (
-                    <ChevronDown size={16} className="text-slate-500" />
-                  )}
                 </>
               )}
               
@@ -87,7 +89,7 @@ export function Sidebar() {
                   {item.label}
                 </div>
               )}
-            </button>
+            </Link>
           );
         })}
       </nav>

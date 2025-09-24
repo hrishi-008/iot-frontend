@@ -2,6 +2,8 @@ import { Header } from "./components/Header";
 import { MachineCard } from "./components/MachineCard";
 import { Sidebar } from "./components/Sidebar";
 import { MachineDetailPage } from "./pages/MachineDetailsPage";
+import { SlideshowPage } from "./pages/SlideshowPage";
+import { SlideshowPageSimple } from "./pages/SlideshowPageSimple";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
@@ -12,7 +14,7 @@ const machineData = [
     shift: 2,
     count: 0,
     recipeName: 'CASTING TYPE-1',
-    status: 'online'
+    status: 'online' as const
   },
   {
     id: 'R500-LPDC-MC-2', 
@@ -20,7 +22,7 @@ const machineData = [
     shift: 1,
     count: 104,
     recipeName: 'AM CAST',
-    status: 'online'
+    status: 'online' as const
   },
   {
     id: 'R500-LPDC-MC-3',
@@ -28,7 +30,7 @@ const machineData = [
     shift: 2,
     count: 102,
     recipeName: 'WEB CAST',
-    status: 'breakdown'
+    status: 'breakdown' as const
   },
   {
     id: '1215-VTA-MC-4',
@@ -36,7 +38,7 @@ const machineData = [
     shift: 'NA',
     count: 0,
     recipeName: 'NA',
-    status: 'offline'
+    status: 'offline' as const
   },
   {
     id: '1518-VTA-MC-5',
@@ -44,7 +46,7 @@ const machineData = [
     shift: 1,
     count: 50,
     recipeName: 'AM CAST',
-    status: 'maintenance'
+    status: 'maintenance' as const
   },
   {
     id: '1629-GDC-MC-6',
@@ -52,7 +54,7 @@ const machineData = [
     shift: 'NA',
     count: 0,
     recipeName: 'NA',
-    status: 'offline'
+    status: 'offline' as const
   },
   {
     id: '2436-HPA-CB-MC-7',
@@ -60,7 +62,7 @@ const machineData = [
     shift: 'NA', 
     count: 0,
     recipeName: 'NA',
-    status: 'offline'
+    status: 'offline' as const
   }
 ];
 
@@ -75,6 +77,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/machine/:id" element={<MachineDetailPage />} />
+              <Route path="/slideshow" element={<SlideshowPage />} />
             </Routes>
           </main>
         </div>

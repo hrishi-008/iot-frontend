@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PowerBI Slideshow Test</title>
+    <script
+      src="https://microsoft.github.io/PowerBI-JavaScript/demo/bower_components/powerbi-client/dist/powerbi.min.js"
+      onerror="loadFallbackScript()"
+    ></script>
+    <script>
+      function loadFallbackScript() {
+        console.log("Trying fallback PowerBI SDK...");
+        const script = document.createElement("script");
+        script.src = "https://cdn.powerbi.com/lib/powerbi-client/2.22.0/powerbi.min.js";
+        script.onerror = function () {
+          console.log("Trying final fallback...");
+          const script2 = document.createElement("script");
+          script2.src = "https://unpkg.com/powerbi-client@2.22.0/dist/powerbi.min.js";
+          script2.onerror = function () {
+            console.error("All PowerBI SDK sources failed.");
+            document.getElementById("statusText").textContent =
+              "❌ PowerBI SDK failed to load. Using iframe fallback.";
+            useIframeFallback();
+          };
+          document.head.appendChild(script2);
+        };
+        document.head.appendChild(script);
+      }
+
+      function useIframeFallback() {
+        // Hide the embed container and show iframe fallback
+        document.getElementById('embedContainer').innerHTML = `
+          <iframe 
+            src="${powerBiUrl}" 
+            width="100%" 
+            height="100%" 
+            frameborder="0" 
+            allowfullscreen="true"
+            style="border: none;">
+          </iframe>
+        `;
+        document.getElementById('loadingDiv').style.display = 'none';
+        document.getElementById('embedContainer').style.display = 'block';
+        document.getElementById("statusText").textContent = 
+          "📊 Using iframe fallback - use PowerBI's built-in controls";
+      }
+    </script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8fafc;
+      }
+
+      #embedContainer {
+        width: 100%;
+        height: 600px;
+        border: 1px solid #e2e8f0;
+        background-color: white;
+        border-radius: 8px;
+      }
+
+      .controls {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #e2e8f0;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .status {
+        font-size: 14px;
+        color: #64748b;
+      }
+
+      .buttons button {
+        margin: 0 5px;
+        padding: 8px 16px;
+        background-color: #f59e0b;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      .buttons button:hover {
+        background-color: #d97706;
+      }
+
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 600px;
+        background-color: white;
+        border-radius: 8px;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #e2e8f0;
+        border-top: 4px solid #f59e0b;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PowerBI Slideshow Demo</h1>
+    <p>This demonstrates the PowerBI embedding with slideshow functionality.</p>
+
+    <div id="loadingDiv" class="loading">
+      <div>
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; color: #64748b">
+          Loading PowerBI Report...
+        </p>
+      </div>
+    </div>
+
+    <div id="embedContainer" style="display: none"></div>
+
+    <div class="controls">
+      <div class="status">
+        <span id="statusText"
+          >🔄 Slideshow: Cycling between pages 2 and 3 every 30 seconds</span
+        >
+      </div>
+      <div class="buttons">
+        <button onclick="switchToPage(2)">Go to Page 2</button>
+        <button onclick="switchToPage(3)">Go to Page 3</button>
+        <button onclick="toggleSlideshow()">Toggle Auto-cycle</button>
+      </div>
+    </div>
+
+    <script>
+      let report;
+      let models;
+      let currentPageIndex = 2;
+      let slideshowInterval;
+      let slideshowActive = false;
+
+      // PowerBI configuration
+      const powerBiUrl =
+        "https://app.powerbi.com/reportEmbed?reportId=04a87a3a-6e65-4ec7-9fb7-3f7dd41d1e8a&autoAuth=true&ctid=b87386c8-9083-4a27-9ddf-63a3dfa33850&actionBarEnabled=true";
+
+      async function embedPowerBIReport() {
+        try {
+          // Get models from powerbi-client
+          models = window["powerbi-client"].models;
+
+          // Create the embed configuration
+          const config = {
+            type: "report",
+            tokenType: models.TokenType.Aad,
+            embedUrl: powerBiUrl,
+            settings: {
+              panes: {
+                filters: {
+                  visible: false,
+                },
+                pageNavigation: {
+                  visible: false,
+                },
+              },
+              bars: {
+                statusBar: {
+                  visible: false,
+                },
+              },
+              background: models.BackgroundType.Transparent,
+            },
+          };
+
+          // Get embed container
+          const embedContainer = document.getElementById("embedContainer");
+
+          // Embed the report
+          report = powerbi.embed(embedContainer, config);
+
+          // Handle events
+          report.on("loaded", async function () {
+            console.log("Report loaded successfully");
+
+            try {
+              // Set zoom level
+              await report.setZoom(0.85);
+              console.log("Zoom set to 85%");
+
+              // Get pages and set initial page
+              const pages = await report.getPages();
+              console.log(`Found ${pages.length} pages`);
+
+              if (pages.length > 2) {
+                await pages[2].setActive();
+                currentPageIndex = 2;
+                console.log(`Set initial page to: ${pages[2].displayName}`);
+              }
+
+              // Hide loading and show report
+              document.getElementById("loadingDiv").style.display = "none";
+              document.getElementById("embedContainer").style.display = "block";
+
+              // Start slideshow
+              startSlideshow();
+            } catch (error) {
+              console.error("Error in loaded handler:", error);
+            }
+          });
+
+          report.on("rendered", function () {
+            console.log("Report rendered");
+          });
+
+          report.on("error", function (event) {
+            console.error("PowerBI Error:", event.detail);
+            document.getElementById("statusText").textContent =
+              "❌ Error loading PowerBI report";
+          });
+        } catch (error) {
+          console.error("Error embedding PowerBI:", error);
+          document.getElementById("statusText").textContent =
+            "❌ Failed to embed PowerBI report";
+        }
+      }
+
+      async function switchToPage(pageIndex) {
+        if (!report) return;
+
+        try {
+          const pages = await report.getPages();
+          if (pages.length > pageIndex) {
+            await pages[pageIndex].setActive();
+            currentPageIndex = pageIndex;
+            console.log(
+              `Switched to page ${pageIndex + 1}: ${
+                pages[pageIndex].displayName
+              }`
+            );
+            updateStatus();
+          }
+        } catch (error) {
+          console.error(`Error switching to page ${pageIndex + 1}:`, error);
+        }
+      }
+
+      function startSlideshow() {
+        if (slideshowInterval) clearInterval(slideshowInterval);
+
+        slideshowActive = true;
+        slideshowInterval = setInterval(async () => {
+          try {
+            const pages = await report.getPages();
+            if (pages.length > 3) {
+              // Toggle between page 2 (index 2) and page 3 (index 3)
+              const nextPageIndex = currentPageIndex === 2 ? 3 : 2;
+              await switchToPage(nextPageIndex);
+            }
+          } catch (error) {
+            console.error("Error in slideshow:", error);
+          }
+        }, 30000); // 30 seconds
+
+        updateStatus();
+      }
+
+      function stopSlideshow() {
+        if (slideshowInterval) {
+          clearInterval(slideshowInterval);
+          slideshowInterval = null;
+        }
+        slideshowActive = false;
+        updateStatus();
+      }
+
+      function toggleSlideshow() {
+        if (slideshowActive) {
+          stopSlideshow();
+        } else {
+          startSlideshow();
+        }
+      }
+
+      function updateStatus() {
+        const statusElement = document.getElementById("statusText");
+        if (slideshowActive) {
+          statusElement.textContent = `🔄 Slideshow Active: Currently on Page ${
+            currentPageIndex + 1
+          }`;
+        } else {
+          statusElement.textContent = `⏸️ Slideshow Paused: On Page ${
+            currentPageIndex + 1
+          }`;
+        }
+      }
+
+      // Initialize when page loads
+      window.addEventListener("load", function () {
+        console.log("Initializing PowerBI embed...");
+        embedPowerBIReport();
+      });
+
+      // Cleanup on page unload
+      window.addEventListener("beforeunload", function () {
+        if (slideshowInterval) {
+          clearInterval(slideshowInterval);
+        }
+      });
+    </script>
+  </body>
+</html>
